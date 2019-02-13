@@ -1,0 +1,27 @@
+{% extends "Surveyapp/employee.html" %}
+{% block content %}
+<div class="container">
+    <p> Welcome to Question Wizard : {{session}}</p>
+    <div class="Questions">
+      <form method="post" action="{% url 'save' survey_id %}">
+             {% csrf_token %}
+        <ul>
+        {% for question in question_list %}
+              <li> {{question.question}} </li>
+            {%if question.question_type == 'text'%}
+                <input type="text" name="{{question.id}}">
+            {%else%}
+                {%for choice in question.get_choices %}
+                    <input type="radio" value="{{choice}}" name="{{question.id}}">
+                    <lable>{{choice}}</lable>
+                {%endfor%}
+            {%endif%}
+        {% endfor %}
+        </ul>
+          <input type="submit" value="Save" name="submitform"/>
+         <input type="submit" value="Submit" name="submitform"/>
+         <!--<input type="submit" value="Finish"/>-->
+       </form>
+    </div>
+</div>
+{% endblock %}
