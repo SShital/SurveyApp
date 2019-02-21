@@ -86,13 +86,13 @@ class Question(models.Model):
 
 
 class SurveyEmployee(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    employee = models.ManyToManyField(Employee)
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
 
 
 class SurveyQuestion(models.Model):
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ManyToManyField(Question)
 
 class SurveyResponse(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)

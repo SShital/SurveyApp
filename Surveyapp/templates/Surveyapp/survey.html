@@ -1,83 +1,77 @@
 {% extends "Surveyapp/employee.html" %}
 {% block content %}
-<div class="container-fluid">
-    <!-- Page Heading -->
-    <div class="row">
-        <div class="col-xl-6 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Survey
-                                completed
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{complete_count}}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
+<!-- Counts Section -->
+<section class="dashboard-counts section-padding">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Count item widget-->
+            <div class="col-xl-4 col-md-4 col-6">
+                <div class="wrapper count-title d-flex">
+                    <div class="name"><strong class="text-uppercase">Assigned Survey</strong>
+                        <div class="count-number" style="text-align:center;">{{assign_survey}}</div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Pending Survey section  -->
-        <div class="col-xl-6 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Incomplete Surveys
-                                Survey
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{incomplete_count}}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-gray-300"></i>
-                        </div>
+            <!-- Count item widget-->
+            <div class="col-xl-4 col-md-4 col-6">
+                <div class="wrapper count-title d-flex">
+                    <div class="name"><strong class="text-uppercase">Completed Survey</strong>
+                        <div class="count-number" style="text-align: center;">{{complete_count}}</div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<div class="conatiner">
-    <p> Welcome to survey : {{session}}</p>
-    <p> Please complete following surveys </p>
-    <ul>
-        <!--{% for s in assign_survey %}-->
-        <!--<li><a href="{% url 'que_list' s.survey_id %}"> {{s.survey}} </a></li>-->
-        <!--{% endfor %}-->
-
-        {% for s in survey_list %}
-        <li><a href="{% url 'que_list' s.survey_id %}"> {{s.survey}} </a></li>
-        {% endfor %}
- </ul>
-</div>
-<!-- Start and resume Survey  -->
-<div class="container">
-    <div class="row">
-        <div class="col-xl-6 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Incomplete Surveys
-                                Survey
-                            </div>
-                            {% for sur in incomplete_survey %}
-                            {{ sur.survey }}
-                            <a href="{% url 'que_list' sur.survey_id %}"> : Resume Survey</a><br/>
-                            {% endfor %}
-
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-gray-300"></i>
-                        </div>
+            <!-- Count item widget-->
+            <div class="col-xl-4 col-md-4 col-6">
+                <div class="wrapper count-title d-flex">
+                    <div class="name"><strong class="text-uppercase">Incompleted
+                        Survey</strong>
+                        <div class="count-number" style="text-align:center;">{{incomplete_count}}</div>
                     </div>
                 </div>
             </div>
         </div>
 
     </div>
-</div>
+</section>
+
+<section class="dashboard-header section-padding">
+    <div class="container-fluid">
+        <div class="row d-flex align-items-md-stretch">
+
+            <div class="col-lg-12 col-md-12">
+                <div class="card to-do">
+                    <h4> Welcome to survey : {{session}}</h4><br/>
+                    <h2 class="display h4">Please complete following surveys</h2>
+                    <ul>
+
+                        {% for s in survey_list %}
+
+                       <li><a href="{% url 'que_list' s.survey_id %}"> {{s.survey}} </a> </li>
+
+                        {% endfor %}
+
+                    </ul>
+                </div>
+            </div>
+            <hr/>
+
+            <div class="col-lg-12 col-md-12 flex-lg-last flex-md-first align-self-baseline">
+                <div class="card sales-report">
+                    <h2 class="display h4">Resume Again!</h2>
+
+                    {% for sur in incomplete_survey %}
+
+                    {{ sur.survey }}
+                    <a href="{% url 'que_list' sur.survey_id %}" style="display:contents"> : Resume Survey</a><br/>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</section>
+
 {% endblock %}
+

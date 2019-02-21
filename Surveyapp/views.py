@@ -20,8 +20,18 @@ def question_list(request, survey_id):
     print(survey_id)
 
     emp_record = Question.objects.filter(surveyquestion__survey_id=survey_id)
-    question_all = Question.objects.all()
-    print("all ques",len(question_all))
+    #question_all = Question.objects.all()
+    #print("all ques",len(question_all))
+    page = request.GET.get('page')
+    paginator = Paginator(emp_record, 5)
+
+    try:
+        emp_record = paginator.page(page)
+    except PageNotAnInteger:
+        emp_record = paginator.page(1)
+    except EmptyPage:
+        emp_record = paginator.page(paginator.num_pages)
+
     context = {'session': m, 'survey_id': survey_id, 'question_list': emp_record}
 
     return render(request, 'Surveyapp/question_list.html', context)
@@ -46,6 +56,7 @@ def employee(request):
         print("surveyppppp",survey)
         survey_count = SurveyResponse.objects.filter(employee_id=emp.id, survey_id=survey.survey_id).count()
         print("survey_count*****", survey_count);
+
         if survey_count:
             if SurveyResponse.objects.filter(survey_id=survey.survey_id, employee_id=emp.id, SaveStatus=True):
                 Completed_survey.append(survey)
@@ -57,9 +68,14 @@ def employee(request):
 
     incomplete_surveylen = len(incomplete_survey)
     Completed_surveylen = len(Completed_survey)
-    #print("completed surveyy",Completed_survey)
+    assign_surveycount= len(assign_survey)
+    assign_surveycount1 =assign_surveycount +1
+    StatusCheck =SurveyResponse.objects.filter(survey_id=survey.survey_id, employee_id=emp.id)
 
-    context = {'session': m, 'total_survey': total_survey,'survey_list': emp_record,'completed_survey':Completed_survey,'incomplete_survey': incomplete_survey, 'assign_survey':assign_survey,'complete_count': Completed_surveylen,'incomplete_count': incomplete_surveylen}
+
+    #print(StatusCheck)
+
+    context = {'session': m, 'total_survey': total_survey,'StatusCheck': StatusCheck,'survey_list': emp_record,'completed_survey':Completed_survey,'incomplete_survey': incomplete_survey, 'assign_survey':assign_surveycount1,'complete_count': Completed_surveylen,'incomplete_count': incomplete_surveylen}
     print(emp_record)
     for i in emp_record:
 
@@ -135,12 +151,13 @@ def send_email(request):
     try:
         name = request.session['username']
         print("Email has been send to :  ", name)
-        email = EmailMessage('Survey Link', 'http://127.0.0.1:8000/employee/', to=['shitalraut708@gmail.com'])
+        email = EmailMessage('Survey Link', 'http://127.0.0.1:8000/Surveyapp/login/', to=['shitalraut708@gmail.com'])
         print("hiiii",email)
-        #email.send()
+        email.send()
 
         print("Email has been send to :  ", name)
         print("---------------mail sent---------------")
+
     except Exception as e:
         print(e)
 
