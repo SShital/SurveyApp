@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'Surveyapp',
 ]
 
@@ -105,8 +106,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'priyanshdeshmukh06@gmail.com'
-EMAIL_HOST_PASSWORD = 'pihuuyuj06'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
 

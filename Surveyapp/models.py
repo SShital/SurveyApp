@@ -2,7 +2,11 @@ from django.db import models
 
 from django.core.exceptions import ValidationError
 
+
 class Organization(models.Model):
+    """
+    This is table for organization.
+    """
     company_name = models.CharField(max_length=200)
     location = models.CharField(max_length=100)
     description = models.CharField(max_length=200)
@@ -19,7 +23,7 @@ class Employee(models.Model):
 
     emp_address = models.CharField(max_length=200)
     company = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    #emp_passFlag =models.BooleanField(default=True)
+
     def __str__(self):
         return self.emp_name
 
@@ -40,7 +44,11 @@ class Survey(models.Model):
 
 
 def validate_list(value):
-    '''takes a text value and verifies that there is at least one comma '''
+    """
+    takes a text value and verifies that there is at least one comma
+    :param value:
+    :return:
+    """
     values = value.split(',')
     if len(values) < 2:
         raise ValidationError(
@@ -65,8 +73,11 @@ class Question(models.Model):
     is_required = models.BooleanField()
     question_type = models.CharField(max_length=200, choices=Question_types, default=TEXT)
 
-    choices = models.TextField(blank=True, null=True,
-                               help_text='if the question type is "radio," "select," or "select multiple" provide a comma-separated list of options for this question .')
+    choices = models.TextField(blank=True,
+                               null=True,
+                               help_text='if the question type is "radio," "select," or '
+                                         '"select multiple" provide a comma-separated list '
+                                         'of options for this question .')
 
     def save(self, *args, **kwargs):
         if (self.question_type == Question.RADIO or self.question_type == Question.SELECT
@@ -75,9 +86,10 @@ class Question(models.Model):
         super(Question, self).save(*args, **kwargs)
 
     def get_choices(self):
-
-        """ parse the choices field and return a tuple formatted appropriately
-        for the 'choices' argument of a form widget."""
+        """
+        parse the choices field and return a tuple formatted appropriately
+        for the 'choices' argument of a form widget.
+        """
         choices = self.choices.split(',')
         return choices
 
@@ -93,6 +105,7 @@ class SurveyEmployee(models.Model):
 class SurveyQuestion(models.Model):
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question = models.ManyToManyField(Question)
+
 
 class SurveyResponse(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
