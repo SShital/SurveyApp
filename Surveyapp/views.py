@@ -1,23 +1,25 @@
+"""
+SurveyApp view
+"""
 from django.shortcuts import render, redirect
-# from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.mail import EmailMessage
-# from email.mime.multipart import MIMEMultipart
-# from email.mime.text import MIMEText
-# from email.mime.base import MIMEBase
-# from email import encoders
 from .forms import LoginForm
-from . errors import PasswordError
 from .models import (Employee, SurveyQuestion, Survey, SurveyEmployee, Question, SurveyResponse)
 
 
 def index(request):
+    """
+    index view
+    """
     return render(request, 'Surveyapp/home.html')
 
 
 def question_list(request, survey_id):
-    m = request.session['username']
-    emp = Employee.objects.get(emp_username=m)
+    """
+    returns employees-question data
+    """
+    session_uname = request.session['username']
     emp_record = Question.objects.filter(surveyquestion__survey_id=survey_id)
     page = request.GET.get('page')
     paginator = Paginator(emp_record, 5)
@@ -29,43 +31,48 @@ def question_list(request, survey_id):
     except EmptyPage:
         emp_record = paginator.page(paginator.num_pages)
 
-    context = {'session': m, 'survey_id': survey_id, 'question_list': emp_record}
+    context = {'session': session_uname, 'survey_id': survey_id, 'question_list': emp_record}
 
     return render(request, 'Surveyapp/question_list.html', context)
 
 
 def employee(request):
-    m = request.session['username']
-    emp = Employee.objects.get(emp_username=m)
+    """
+    employee details
+    """
+    session_uname = request.session['username']
+    emp = Employee.objects.get(emp_username=session_uname)
     emp_record = SurveyEmployee.objects.filter(employee=emp.id)
-    Completed_survey = list()
+    completed_survey = list()
     incomplete_survey = list()
     assign_survey = list()
     total_survey = list()
 
     for survey in emp_record:
-        survey_count = SurveyResponse.objects.filter(employee_id=emp.id, survey_id=survey.survey_id).count()
+        survey_count = SurveyResponse.objects.filter(employee_id=emp.id,
+                                                     survey_id=survey.survey_id).count()
 
         if survey_count:
-            if SurveyResponse.objects.filter(survey_id=survey.survey_id, employee_id=emp.id, SaveStatus=True):
-                Completed_survey.append(survey)
+            if SurveyResponse.objects.filter(survey_id=survey.survey_id,
+                                             employee_id=emp.id, SaveStatus=True):
+                completed_survey.append(survey)
             else:
                 incomplete_survey.append(survey)
         else:
             assign_survey.append(survey)
 
     incomplete_surveylen = len(incomplete_survey)
-    completed_surveylen = len(Completed_survey)
-    assign_surveycount= len(assign_survey)
+    completed_surveylen = len(completed_survey)
+    assign_surveycount = len(assign_survey)
     assign_surveycount1 = assign_surveycount + 1
     status_check = SurveyResponse.objects.filter(survey_id=survey.survey_id, employee_id=emp.id)
 
     context = {
-        'session': m,
+        'session': session_uname,
         'total_survey': total_survey,
         'StatusCheck': status_check,
         'survey_list': emp_record,
-        'completed_survey': Completed_survey,
+        'completed_survey': completed_survey,
         'incomplete_survey': incomplete_survey,
         'assign_survey': assign_surveycount1,
         'complete_count': completed_surveylen,
@@ -76,6 +83,9 @@ def employee(request):
 
 
 def login(request):
+    """
+    login view
+    """
     form = LoginForm()
     context = {'form': form}
 
@@ -87,15 +97,18 @@ def login(request):
             if Employee.objects.get(emp_username=username, emp_password=password):
                 request.session['username'] = username
                 return redirect('employee')
-        except PasswordError:
-            raise PasswordError(msg="wrong password")
+        except BaseException:
+            raise BaseException(msg="wrong password")
 
     return render(request, "Surveyapp/login.html", context)
 
 
 def save(request, survey_id):
-    m = request.session['username']
-    emp = Employee.objects.get(emp_username=m)
+    """
+    Save responses
+    """
+    session_uname = request.session['username']
+    emp = Employee.objects.get(emp_username=session_uname)
 
     for name in request.POST:
         if name != "csrfmiddlewaretoken" and name != "submitform":
@@ -120,10 +133,15 @@ def save(request, survey_id):
 
 
 def send_email(request):
+    """
+    Send mail
+    """
     try:
         name = request.session['username']
         print("Email has been send to :  ", name)
-        email = EmailMessage('Survey Link', 'http://127.0.0.1:8000/Surveyapp/login/', to=['shitalraut708@gmail.com'])
+        email = EmailMessage('Survey Link',
+                             'http://127.0.0.1:8000/Surveyapp/login/',
+                             to=['shitalraut708@gmail.com'])
         email.send()
 
         print("Email has been send to :  ", name)
@@ -136,9 +154,11 @@ def send_email(request):
 
 
 def logout(request):
+    """
+    session timeout
+    """
     try:
         del request.session['username']
     except KeyError:
         pass
     return redirect('login')
-

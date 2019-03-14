@@ -1,5 +1,7 @@
+"""
+This is model for survey-app
+"""
 from django.db import models
-
 from django.core.exceptions import ValidationError
 
 
@@ -16,6 +18,9 @@ class Organization(models.Model):
 
 
 class Employee(models.Model):
+    """
+    This is table for employees data
+    """
     emp_name = models.CharField(max_length=200)
     emp_username = models.CharField(max_length=100)
     emp_password = models.CharField(max_length=100)
@@ -32,6 +37,9 @@ class Employee(models.Model):
 
 
 class Survey(models.Model):
+    """
+    This table is used to stored survey data
+    """
     survey_name = models.CharField(max_length=200)
     description = models.CharField(max_length=200)
     date = models.DateField()
@@ -52,10 +60,14 @@ def validate_list(value):
     values = value.split(',')
     if len(values) < 2:
         raise ValidationError(
-            "The selected field requires an associated list of choices. Choices must contain more than one item.")
+            "The selected field requires an associated list "
+            "of choices. Choices must contain more than one item.")
 
 
 class Question(models.Model):
+    """
+    Question table
+    """
     TEXT = 'text'
     RADIO = ' radio '
     SELECT = 'select'
@@ -98,16 +110,25 @@ class Question(models.Model):
 
 
 class SurveyEmployee(models.Model):
+    """
+    survey-employee mapping table
+    """
     employee = models.ManyToManyField(Employee)
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
 
 
 class SurveyQuestion(models.Model):
+    """
+    survey question mapping table
+    """
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question = models.ManyToManyField(Question)
 
 
 class SurveyResponse(models.Model):
+    """
+    survey response table
+    """
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)

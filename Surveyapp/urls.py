@@ -1,5 +1,10 @@
-from . import views
+"""
+surveyapp urls
+"""
+
 from django.urls import path
+from . import views
+
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -9,4 +14,4 @@ urlpatterns = [
     path('save/<int:survey_id>', views.save, name='save'),
     path('logout/', views.logout, name='logout'),
     path('sendmail/', views.send_email, name='sendmail'),
-]
+    ]

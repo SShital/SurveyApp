@@ -1,5 +1,9 @@
+"""
+Admin register
+"""
 from django.contrib import admin
-from .models import Employee, Organization,Survey,Question,SurveyEmployee, SurveyQuestion,SurveyResponse
+from .models import (Employee, Organization, Survey, Question,
+                     SurveyEmployee, SurveyQuestion, SurveyResponse)
 
 admin.site.register(Employee)
 admin.site.register(Organization)
